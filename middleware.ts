@@ -1,13 +1,13 @@
-// middleware.ts
-import { clerkMiddleware } from "@clerk/nextjs/server";
+import { authMiddleware } from "@clerk/nextjs";
 
-export default clerkMiddleware();
+export default authMiddleware({
+  // Цей рядок робить головну сторінку доступною без пароля.
+  // Якщо хочете закрити все — приберіть publicRoutes.
+  publicRoutes: ["/"],
+});
 
 export const config = {
-  matcher: [
-    // Пропускаємо статичні файли Next.js та зображення
-    '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
-    // Завжди запускаємо для API
-    '/(api|trpc)(.*)',
-  ],
+  // Цей matcher каже Clerk ігнорувати статичні файли (картинки, шрифти),
+  // що прибирає помилку #crypto
+  matcher: ["/((?!.+\\.[\\w]+$|_next).*)", "/", "/(api|trpc)(.*)"],
 };
